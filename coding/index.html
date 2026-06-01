@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stay with me • baikan yuk</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: VT323 (untuk font pixel vintage) & Plus Jakarta Sans (untuk teks bersih) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #FCE1EC; /* Pastel pink background like screenshot */
+            background-image: radial-gradient(#fbc3db 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            overflow-x: hidden;
+        }
+
+        .pixel-font {
+            font-family: 'VT323', monospace;
+        }
+
+        /* Retro Pop-up Window (matching the screenshot) */
+        .window-box {
+            background: #FFFFFF;
+            border: 3px solid #000000;
+            border-radius: 16px;
+            box-shadow: 6px 6px 0px #000000;
+            overflow: hidden;
+        }
+
+        .window-header {
+            background: #FF6B97; /* Sweet pink header */
+            border-bottom: 3px solid #000000;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        /* 3 window dots on the right (like screenshot) */
+        .dot-container {
+            display: flex;
+            gap: 6px;
+        }
+        .window-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid #000000;
+        }
+
+        /* Button Styling (Green YES button from screenshot) */
+        .btn-yes {
+            background-color: #99FFCD; /* Pastel Green */
+            border: 3px solid #000000;
+            border-radius: 12px;
+            box-shadow: 4px 4px 0px #000000;
+            font-family: 'VT323', monospace;
+            font-size: 2rem;
+            transition: all 0.1s ease;
+        }
+        .btn-yes:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000000;
+        }
+
+        /* NO Button (Fleeing Button) */
+        .btn-no {
+            background-color: #FFB3D1; /* Light Pink */
+            border: 3px solid #000000;
+            border-radius: 12px;
+            box-shadow: 4px 4px 0px #000000;
+            font-family: 'VT323', monospace;
+            font-size: 2rem;
+            transition: all 0.1s ease;
+        }
+
+        /* Polaroid Memory Card (Pinterest/Aesthetic style) */
+        .polaroid {
+            background: #FFFFFF;
+            border: 3px solid #000000;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .polaroid:hover {
+            transform: scale(1.03) rotate(1deg);
+        }
+
+        /* Tic-Tac-Toe */
+        .ttt-cell {
+            aspect-ratio: 1;
+            border: 3px solid #000000;
+            font-family: 'VT323', monospace;
+            font-size: 3rem;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            transition: background-color 0.2s;
+        }
+        .ttt-cell:hover {
+            background-color: #FFF0F5;
+        }
+
+        /* Falling Hearts Canvas */
+        #heartCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Screen Transitions */
+        .screen-container {
+            display: none;
+            opacity: 0;
+            transform: scale(0.98);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .screen-container.active {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Gentle bounce animation for elements */
+        @keyframes gentle-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .animate-bounce-gentle {
+            animation: gentle-bounce 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative">
+
+    <!-- Falling Hearts Background -->
+    <canvas id="heartCanvas"></canvas>
+
+    <!-- MAIN CONTAINER -->
+    <main class="w-full max-w-md z-10">
+
+        <!-- ================= SCREEN 1: STAY WITH ME (The Proposal/Apology) ================= -->
+        <div id="screen-apology" class="screen-container active">
+            <div class="window-box w-full">
+                <!-- Header Bar -->
+                <div class="window-header">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-lg">💌</span>
+                        <span class="pixel-font text-2xl font-bold tracking-wider text-black">message.exe</span>
+                    </div>
+                    <div class="dot-container">
+                        <div class="window-dot bg-[#FF5C5C]"></div>
+                        <div class="window-dot bg-[#FFC72C]"></div>
+                        <div class="window-dot bg-[#00CA4E]"></div>
+                    </div>
+                </div>
+
+                <!-- Body Content -->
+                <div class="p-8 text-center bg-white">
+                    <!-- Bagian Foto Awal (Menggunakan Tag <img>) -->
+                    <div class="flex justify-center mb-6">
+                        <div class="w-40 h-40 rounded-2xl border-[3px] border-black overflow-hidden shadow-[4px_4px_0px_#000000]">
+                            <!-- Ganti URL di src="..." di bawah ini dengan foto pilihanmu -->
+                            <img src="foto-bunga.jpg" 
+                                 alt="Sad Cat" 
+                                 class="w-full h-full object-cover" 
+                                 onerror="this.src='https://placehold.co/160x160/faf5ff/334155?text=Foto+Sedih'">
+                        </div>
+                    </div>
+
+                    <h1 class="pixel-font text-5xl font-black text-black mb-3">ni for u dari kembaran chaeunwo</h1>
+                    <p class="text-neutral-600 text-sm md:text-base leading-relaxed mb-8 px-2 font-medium">
+                        Aku mirip chaeunwo setengah nicolas
+                    </p>
+
+                    <!-- Interaction Buttons (Match the screenshots with YES as main and NO fleeing) -->
+                    <div class="relative flex flex-col sm:flex-row items-center justify-center gap-6 mt-4 min-h-[100px]">
+                        <button id="yes-btn" onclick="goToScreen('screen-gallery')" class="btn-yes text-black font-black px-12 py-3 w-40 transform hover:scale-105 active:scale-95">
+                            IYAAAAA BANGET MIRIP
+                        </button>
+
+                        <button id="no-btn" class="btn-no text-black font-black px-12 py-3 w-40 z-50">
+                            IYA
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCREEN 2: THE THANK YOU / MEMORIES ================= -->
+        <div id="screen-gallery" class="screen-container">
+            <div class="window-box w-full">
+                <!-- Header Bar -->
+                <div class="window-header">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-lg">💖</span>
+                        <span class="pixel-font text-2xl font-bold tracking-wider text-black">thank_you.exe</span>
+                    </div>
+                    <div class="dot-container">
+                        <div class="window-dot bg-[#FF5C5C]"></div>
+                        <div class="window-dot bg-[#FFC72C]"></div>
+                        <div class="window-dot bg-[#00CA4E]"></div>
+                    </div>
+                </div>
+
+                <!-- Body Content -->
+                <div class="p-6 text-center bg-white">
+                    <div class="inline-block animate-bounce-gentle text-4xl mb-2">❤️</div>
+                    <h1 class="pixel-font text-4xl font-black text-black mb-1">WKWKWK THANK U BABE</h1>
+                    <p class="text-neutral-500 text-xs md:text-sm font-medium mb-6">
+                        JANGAN SEDIH SEDIH LAGI YAAA, AKU SAYANG BANGET SAMA KAMU BTW
+                    </p>
+
+                    <!-- Polaroid Grid with Premium SVG Line-arts (Sleek and mature) -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <!-- Polaroid 1: Deep Conversations -->
+                        <div class="polaroid p-2 rotate-[-2deg]">
+                            <div class="bg-[#FDF2F8] rounded-lg p-4 flex items-center justify-center h-24 border border-neutral-100">
+                             <img src="foto-rrrr.jpg" class="w-full h-full object-cover" alt="Deep Talk">   
+                            </div>
+                            <p class="text-[11px] font-bold text-neutral-600 mt-2 tracking-wide uppercase">lots of love </p>
+                        </div>
+
+                        <!-- Polaroid 2: Support / Hand Holding -->
+                        <div class="polaroid p-2 rotate-[2deg]">
+                            <div class="bg-[#EFF6FF] rounded-lg p-4 flex items-center justify-center h-24 border border-neutral-100">
+                                <img src="foto-kita.jpg" class="w-full h-full object-center" alt="Deep Talk">
+                            </div>
+                            <p class="text-[11px] font-bold text-neutral-600 mt-2 tracking-wide uppercase">yg cengeng kita ketawain</p>
+                        </div>
+                    </div>
+
+                    <!-- Button to proceed to Tic-Tac-Toe -->
+                    <button onclick="goToScreen('screen-game')" class="btn-yes text-black font-black px-8 py-2.5 rounded-xl text-lg w-full transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2">
+                        <span>Game Tic Tac ni neng</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCREEN 3: GAME TIC-TAC-TOE ================= -->
+        <div id="screen-game" class="screen-container">
+            <div class="window-box w-full">
+                <!-- Header Bar -->
+                <div class="window-header">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-lg">🕹️</span>
+                        <span class="pixel-font text-2xl font-bold tracking-wider text-black">tic_tac_toe.exe</span>
+                    </div>
+                    <div class="dot-container">
+                        <div class="window-dot bg-[#FF5C5C]"></div>
+                        <div class="window-dot bg-[#FFC72C]"></div>
+                        <div class="window-dot bg-[#00CA4E]"></div>
+                    </div>
+                </div>
+
+                <!-- Body Content -->
+                <div class="p-6 text-center bg-white">
+                    <h1 class="pixel-font text-4xl font-black text-black mb-1">Tic-Tac-Toe Game  🎮</h1>
+                    <p id="game-status" class="text-neutral-500 text-sm font-semibold mb-6">Gilirannya kamu (Sena sayang)</p>
+
+                    <!-- Grid matching the classic retro style -->
+                    <div class="grid grid-cols-3 gap-2 max-w-[260px] mx-auto mb-6 bg-black p-1 rounded-2xl shadow-[4px_4px_0px_#000000] border-2 border-black">
+                        <button onclick="makeMove(0)" class="ttt-cell rounded-lg flex items-center justify-center text-black focus:outline-none" id="cell-0"></button>
+                        <button onclick="makeMove(1)" class="ttt-cell rounded-lg flex items-center justify-center text-black focus:outline-none" id="cell-1"></button>
+                        <button onclick="makeMove(2)" class="ttt-cell rounded-lg flex items-center justify-center text-black focus:outline-none" id="cell-2"></button>
+                        <button onclick="makeMove(3)" class="ttt-cell rounded-lg flex items-center justify-center text-black focus:outline-none" id="cell-3"></button>
+                        <button onclick="makeMove(4)" class="ttt-cell rounded-lg flex items-center justify-center text-black focus:outline-none" id="cell-4"></button>
+                        <button onclick="makeMove(5)" class="ttt-cell rounded-lg flex items-center justify-center text-black focus:outline-none" id="cell-5"></button>
+                        <button onclick="makeMove(6)" class="ttt-cell rounded-lg flex items-center justify-center text-black focus:outline-none" id="cell-6"></button>
+                        <button onclick="makeMove(7)" class="ttt-cell rounded-lg flex items-center justify-center text-black focus:outline-none" id="cell-7"></button>
+                        <button onclick="makeMove(8)" class="ttt-cell rounded-lg flex items-center justify-center text-black focus:outline-none" id="cell-8"></button>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-center gap-4">
+                        <button onclick="resetGame()" class="btn-no text-black font-bold px-4 py-2 rounded-xl text-lg transform hover:scale-105 active:scale-95">
+                            Ketagihan wkwk
+                        </button>
+                        <button id="next-stage-btn" onclick="goToScreen('screen-coupons')" class="btn-yes text-black font-bold px-6 py-2 rounded-xl text-lg transform hover:scale-105 active:scale-95 opacity-50 cursor-not-allowed" disabled>
+                            Pasrah
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCREEN 4: DEWASA & TULUS VOUCHERS ================= -->
+        <div id="screen-coupons" class="screen-container">
+            <div class="window-box w-full">
+                <!-- Header Bar -->
+                <div class="window-header">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-lg">🎟️</span>
+                        <span class="pixel-font text-2xl font-bold tracking-wider text-black">sweet_vouchers.exe</span>
+                    </div>
+                    <div class="dot-container">
+                        <div class="window-dot bg-[#FF5C5C]"></div>
+                        <div class="window-dot bg-[#FFC72C]"></div>
+                        <div class="window-dot bg-[#00CA4E]"></div>
+                    </div>
+                </div>
+
+                <!-- Body Content -->
+                <div class="p-6 text-center bg-white">
+                    <h1 class="pixel-font text-4xl font-black text-black mb-1">Thoughtful Vouchers y </h1>
+                    <p class="text-neutral-500 text-xs md:text-sm mb-6">
+                        Biar u happy, ambil vouchernya ss ke aku, nanti pas semuanya udah reda, kita atur tanggalnya:
+                    </p>
+
+                    <!-- Voucher List -->
+                    <div class="space-y-4 mb-6">
+                        <!-- Voucher 1 -->
+                        <div class="border-2 border-dashed border-slate-300 bg-slate-50 p-3.5 rounded-xl flex justify-between items-center relative overflow-hidden">
+                            <div class="text-left pr-2">
+                                <span class="text-[9px] text-pink-500 font-bold tracking-widest uppercase">Voucher Paket Malam</span>
+                                <h3 class="font-bold text-neutral-800 text-sm mt-0.5">Mam Pecel Dewi Sartika 🍽️</h3>
+                                <p class="text-[10px] text-neutral-400 mt-0.5">Kita keluar cari makan malam.</p>
+                            </div>
+                            <button onclick="claimCoupon(this, 'Dinner & Deep Talk')" class="btn-yes px-4 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap ml-2">
+                                Klaim
+                            </button>
+                        </div>
+
+                        <!-- Voucher 2 -->
+                        <div class="border-2 border-dashed border-slate-300 bg-slate-50 p-3.5 rounded-xl flex justify-between items-center relative overflow-hidden">
+                            <div class="text-left pr-2">
+                                <span class="text-[9px] text-pink-500 font-bold tracking-widest uppercase">Voucher Beli bunga</span>
+                                <h3 class="font-bold text-neutral-800 text-sm mt-0.5">Kita ngedate keluar cari bunga</h3>
+                                <p class="text-[10px] text-neutral-400 mt-0.5">kemana pun ada bunga atau pasar rawa belong</p>
+                            </div>
+                            <button onclick="claimCoupon(this, 'Quiet Support')" class="btn-yes px-4 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap ml-2">
+                                Klaim
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Elegant Ending Card -->
+                    <div class="p-4 border-2 border-black bg-amber-50 rounded-xl text-left shadow-[3px_3px_0px_#000000]">
+                        <p class="text-[10px] font-bold text-amber-600 tracking-wider uppercase mb-1">A Gentle Reminder:</p>
+                        <p class="text-xs italic text-neutral-700 leading-relaxed font-medium">
+                            Aku pernah baca buku apa ya pokoknya salah satu kutipannya "Bahkan jika malaikat datang untuk memberitahuku tentang surga, aku akan berpaling. Aku telah menemukan bagian surga surga ku disini bersamamu" 🍂
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Custom Pop-up Notification (Minimalist Elegant Modal) -->
+    <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-30 hidden">
+        <div class="window-box max-w-xs w-full p-6 text-center bg-white transform scale-90 transition-transform duration-200">
+            <div class="text-3xl mb-2" id="modal-emoji">✨</div>
+            <h3 class="text-xl font-bold mb-1 text-neutral-800" id="modal-title">Berhasil</h3>
+            <p class="text-neutral-500 text-xs leading-relaxed mb-6" id="modal-message">Sesuatu berhasil dilakukan.</p>
+            <button onclick="closeModal()" class="btn-yes text-black font-bold px-6 py-2 rounded-xl text-sm w-full">
+                Oke!
+            </button>
+        </div>
+    </div>
+
+    <!-- JS Logic -->
+    <script>
+        // ================= BACKGROUND FLOATING HEARTS SYSTEM =================
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let hearts = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Heart {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * -canvas.height;
+                this.size = Math.random() * 8 + 6;
+                this.speed = Math.random() * 1.5 + 0.8;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.rotation = Math.random() * Math.PI;
+                this.rotationSpeed = Math.random() * 0.01 - 0.005;
+                this.swing = Math.random() * 0.4 + 0.2;
+                this.swingSpeed = Math.random() * 0.02;
+                this.swingStep = Math.random() * 100;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = '#FF85A1'; // Soft pink heart petal
+                
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-this.size / 2, -this.size / 2, -this.size, 0, 0, this.size);
+                ctx.bezierCurveTo(this.size, 0, this.size / 2, -this.size / 2, 0, 0);
+                ctx.fill();
+                
+                ctx.restore();
+            }
+
+            update() {
+                this.y += this.speed;
+                this.swingStep += this.swingSpeed;
+                this.x += Math.sin(this.swingStep) * this.swing;
+                this.rotation += this.rotationSpeed;
+                
+                if (this.y > canvas.height + 20) {
+                    this.y = -20;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+        }
+
+        function initHearts() {
+            for (let i = 0; i < 25; i++) {
+                hearts.push(new Heart());
+            }
+        }
+
+        function animateHearts() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach(heart => {
+                heart.update();
+                heart.draw();
+            });
+            requestAnimationFrame(animateHearts);
+        }
+
+        window.onload = function() {
+            initHearts();
+            animateHearts();
+        };
+
+        // ================= SCREEN TRANSITION LOGIC =================
+        function goToScreen(screenId) {
+            const activeScreen = document.querySelector('.screen-container.active');
+            if (activeScreen) {
+                activeScreen.classList.remove('active');
+            }
+
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+            }
+        }
+
+        // ================= FLEEING NO BUTTON LOGIC =================
+        const noBtn = document.getElementById('no-btn');
+
+        function moveButton() {
+            const buffer = 60;
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+            
+            // Calculate a random safe position within viewport bounds
+            const x = Math.random() * (window.innerWidth - btnWidth - buffer * 2) + buffer;
+            const y = Math.random() * (window.innerHeight - btnHeight - buffer * 2) + buffer;
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = `${Math.max(12, Math.min(x, window.innerWidth - btnWidth - 12))}px`;
+            noBtn.style.top = `${Math.max(12, Math.min(y, window.innerHeight - btnHeight - 12))}px`;
+        }
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            moveButton();
+        });
+
+        // ================= GAME: TIC-TAC-TOE =================
+        let board = ['', '', '', '', '', '', '', '', ''];
+        let isGameActive = true;
+        const playerSymbol = 'X';
+        const aiSymbol = 'O';
+        const winPatterns = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+
+        function makeMove(index) {
+            if (board[index] !== '' || !isGameActive) return;
+
+            board[index] = playerSymbol;
+            updateBoard();
+            
+            if (checkWin(playerSymbol)) {
+                endGame("Kamu Menang! 🎉", "Luar biasa! Tombol 'Next' sekarang terbuka.");
+                return;
+            }
+
+            if (board.includes('')) {
+                document.getElementById('game-status').innerText = "Sedang berpikir... ☕";
+                isGameActive = false;
+                setTimeout(aiMove, 700);
+            } else {
+                endGame("Game Seri! 🤝", "Ayo kita lanjut ke halaman berikutnya.");
+            }
+        }
+
+        function aiMove() {
+            let availableCells = [];
+            board.forEach((val, i) => { if (val === '') availableCells.push(i); });
+
+            if (availableCells.length === 0) return;
+
+            // AI blocks or plays strategically
+            let move = findWinningMove(aiSymbol);
+            if (move === null) {
+                move = findWinningMove(playerSymbol);
+            }
+            if (move === null) {
+                const randIndex = Math.floor(Math.random() * availableCells.length);
+                move = availableCells[randIndex];
+            }
+
+            board[move] = aiSymbol;
+            updateBoard();
+            isGameActive = true;
+
+            if (checkWin(aiSymbol)) {
+                endGame("Coba lagi yuk?", "Jangan patah semangat, klik Reset untuk mencoba kembali.");
+                return;
+            }
+
+            if (!board.includes('')) {
+                endGame("Game Seri! 🤝", "Ayo kita lanjut ke halaman berikutnya.");
+            } else {
+                document.getElementById('game-status').innerText = "Gilirannya kamu (X)";
+            }
+        }
+
+        function findWinningMove(symbol) {
+            for (let pattern of winPatterns) {
+                const [a, b, c] = pattern;
+                if (board[a] === symbol && board[b] === symbol && board[c] === '') return c;
+                if (board[a] === symbol && board[c] === symbol && board[b] === '') return b;
+                if (board[b] === symbol && board[c] === symbol && board[a] === '') return a;
+            }
+            return null;
+        }
+
+        function checkWin(symbol) {
+            return winPatterns.some(pattern => {
+                return pattern.every(index => board[index] === symbol);
+            });
+        }
+
+        function updateBoard() {
+            board.forEach((val, i) => {
+                const cell = document.getElementById(`cell-${i}`);
+                cell.innerText = val;
+                if (val === playerSymbol) {
+                    cell.style.color = '#FF5C8A';
+                } else if (val === aiSymbol) {
+                    cell.style.color = '#3B82F6';
+                }
+            });
+        }
+
+        function endGame(title, msg) {
+            isGameActive = false;
+            document.getElementById('game-status').innerText = title;
+            showModal(title, msg, "🕹️");
+            
+            const nextBtn = document.getElementById('next-stage-btn');
+            nextBtn.removeAttribute('disabled');
+            nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        function resetGame() {
+            board = ['', '', '', '', '', '', '', '', ''];
+            isGameActive = true;
+            updateBoard();
+            document.getElementById('game-status').innerText = "Gilirannya kamu (X)";
+        }
+
+        // ================= KUPON CLAIM SYSTEM =================
+        function claimCoupon(button, couponName) {
+            button.innerText = "Tersimpan 🌸";
+            button.setAttribute('disabled', 'true');
+            button.style.backgroundColor = '#F3F4F6';
+            button.style.color = '#9CA3AF';
+            button.style.border = '2px solid #D1D5DB';
+            button.style.boxShadow = 'none';
+
+            showModal(
+                "Kupon Berhasil Disimpan!",
+                `Terima kasih ya. Tunjukkan kupon [${couponName}] ini kapan saja kamu inginkan!`,
+                "🎟️"
+            );
+        }
+
+        // ================= CUSTOM MODAL SYSTEM =================
+        function showModal(title, msg, emoji = "✨") {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = msg;
+            document.getElementById('modal-emoji').innerText = emoji;
+            
+            const modal = document.getElementById('custom-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.firstElementChild.classList.remove('scale-90');
+                modal.firstElementChild.classList.add('scale-100');
+            }, 50);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('custom-modal');
+            modal.firstElementChild.classList.remove('scale-100');
+            modal.firstElementChild.classList.add('scale-90');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 150);
+        }
+    </script>
+</body>
+</html>
